@@ -5,6 +5,7 @@ from supervisor_agent import SupervisorAgent
 from jobs_agent import JobsAgent
 from location_agent import LocationAgent
 from resources_agent import ResourcesAgent
+from aggregator_agent import AggregatorAgent
 from dotenv import load_dotenv
 from typing import List, Annotated, Literal, TypedDict
 from langchain_ollama import ChatOllama
@@ -27,7 +28,7 @@ class Orchestrator:
         self.jobs_agent = JobsAgent()
         self.locations_agent = LocationAgent()
         self.resources_agent = ResourcesAgent()
-
+        self.aggregator_agent = AggregatorAgent()
         # Create LangGraph workflow
         self.workflow = StateGraph(State)
 
@@ -69,6 +70,18 @@ class Orchestrator:
         state["prompts_resource"].append(AIMessage(subqueries.get('resource_query','')))
         return state
     def aggregator(self, state: State) -> State:
+        response_supervisor = []
+        response_job = state["response_job"][-1]
+        if response_job:
+            response_supervisor.append(response_job)
+        response_location = state["response_location"][-1]
+        if response_location:
+            response_supervisor.append(response_location)
+        response_resource =state["response_resource"][-1]
+        if response_resource:
+            response_supervisor.append(response_resource)
+        result = self.aggregator_agent.run(state["prompts_supervisor"][-1], response_supervisor)
+        state["response_supervisor"].append(result)
         state["done"] = True
         # TODO: validate
         return state
@@ -76,23 +89,21 @@ class Orchestrator:
     def jobs(self, state: State) -> State:
         prompt = state["prompts_job"][-1]
         if prompt:
-            print(prompt)
-            self.jobs_agent.run(prompt.content)
+            state["response_job"].append(self.jobs_agent.run(prompt.content))
             #TODO: parse the response
         return state
     
     def location(self, state: State) -> State:
         prompt = state["prompts_location"][-1]
         if prompt:
-            self.locations_agent.run(prompt.content)
+            state["response_location"].append(self.locations_agent.run(prompt.content))
             #TODO: parse the response
         return state
     
     def resource(self, state: State) -> State:
         prompt = state["prompts_resource"][-1]
         if prompt:
-            self.resources_agent.run(prompt.content)
-            #TODO: parse the response
+            state["response_resource"].append(self.resources_agent.run(prompt.content))
         return state
     
     def start(self, user_input: str) -> str:
@@ -101,9 +112,11 @@ if __name__ == "__main__":
     orchestrator = Orchestrator()
     # while True:
         # user_input = input("You: ")
-    user_input = "I have a job interview for a Software Engineer position at CNN in downtown Chicago. What can you tell me about the company, local safety, and nearby resources?"
+    # user_input = "I have a job interview for a Software Engineer position at CNN in downtown Chicago. What can you tell me about the company, local safety, and nearby resources?"
+    user_input = "I was considering moving to blacksburg VA"
         # if user_input.lower() == "exit":
         #     print("Chatbot: Goodbye!")
         #     break
     response = orchestrator.start(user_input)
-    print(response)
+    print("#"*30)
+    print(response["response_supervisor"][-1].content)
