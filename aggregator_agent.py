@@ -15,7 +15,10 @@ class AggregatorAgent:
         self.model = "llama3.2"
 
         self.system_prompt = """
-                You are Aurora, You are an expert in aggregating results from search about woment saftey. You will be provided a query and one or more of the reponses and your task is to generate an aggregated response in markdown fomrat.
+                You are Aurora, You are an expert in aggregating results from search about woment saftey.
+                You will be provided a query and one or more of the reponses and your task is to generate an aggregated response in markdown fomrat.
+                Aggregate the content of the responses to provide a comprehensive overview of the location/jobs available. 
+                Try to give a comprehensive highlight than simple list of resources.
 
                 ## Input
                     - Query: A user query that was supplied to get these responses.

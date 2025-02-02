@@ -11,7 +11,9 @@ class JobsAgent:
         self.llm = ChatOllama(model=self.model, temperature = 0.5)
 
         self.system_prompts = {"update_query":"""
-                You are Aurora, an expert query analizer. You are focused on provideing assitance to Women in accessing infomration regarding jobs and companies safty. Update the following search query to be more focused on job posts in the location provided or implied, safty and related information for women in the company if available.
+                You are Aurora, an expert query analizer. You are focused on provideing assitance to Women in accessing infomration regarding jobs and companies safty. 
+                Update the following search query to be more focused on job posts in the location provided or implied, safty and related information for women in the company if available.
+                Make it more focused on jobs and companies that have women's safty information/reports and not about woment's safty jobs.
 
                 ## Input:
                     - Query: A user search query to be used for searching for web.

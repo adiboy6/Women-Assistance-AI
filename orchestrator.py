@@ -112,7 +112,8 @@ if __name__ == "__main__":
     orchestrator = Orchestrator()
     # while True:
         # user_input = input("You: ")
-    user_input = "I have a job interview for a Software Engineer position at CNN in downtown Chicago. What can you tell me about the company, local safety, and nearby resources?"
+    # user_input = "I have a job interview for a Software Engineer position at CNN in downtown Chicago. What can you tell me about the company, local safety, and nearby resources?"
+    user_input = "I was considering moving to blacksburg VA"
         # if user_input.lower() == "exit":
         #     print("Chatbot: Goodbye!")
         #     break
