@@ -76,7 +76,7 @@ class SupervisorAgent:
         try:
             return self.output_parser.parse(result.content)
         except Exception as e:
-            return ""#e
+            return ""
         
 if __name__ == "__main__":
     supervisor = SupervisorAgent()
