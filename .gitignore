@@ -1,0 +1,3 @@
+infra\.terraform.lock.hcl
+infra\windows_386
+infra\.terraform
